@@ -17,20 +17,19 @@
  * under the License.
  */
 
-import { Legacy } from 'kibana';
-import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
-import { IPrivate } from 'ui/private';
-import { SavedVisualizations } from '../types';
-import { VisualizeEmbeddableFactory } from './visualize_embeddable_factory';
+import { Action } from 'ui/embeddable/actions/action';
+import { Embeddable } from 'ui/embeddable/embeddables';
 
-export function visualizeEmbeddableFactoryProvider(Private: IPrivate) {
-  const VisualizeEmbeddableFactoryProvider = (
-    savedVisualizations: SavedVisualizations,
-    config: Legacy.KibanaConfig
-  ) => {
-    return new VisualizeEmbeddableFactory(savedVisualizations, config);
-  };
-  return Private(VisualizeEmbeddableFactoryProvider);
+export class Trigger<O> {
+  private actions: Array<Action<O, any>> = [];
+
+  constructor(public readonly id: string) {}
+
+  public getActionsForEmbeddable(embeddable: Embeddable<any, any>) {
+    return this.actions.filter(action => action.isCompatible(embeddable));
+  }
+
+  public addAction(action: Action<O, any>) {
+    this.actions.push(action);
+  }
 }
-
-EmbeddableFactoriesRegistryProvider.register(visualizeEmbeddableFactoryProvider);

@@ -17,20 +17,16 @@
  * under the License.
  */
 
-import { Legacy } from 'kibana';
-import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
-import { IPrivate } from 'ui/private';
-import { SavedVisualizations } from '../types';
-import { VisualizeEmbeddableFactory } from './visualize_embeddable_factory';
+import { resolve } from 'path';
 
-export function visualizeEmbeddableFactoryProvider(Private: IPrivate) {
-  const VisualizeEmbeddableFactoryProvider = (
-    savedVisualizations: SavedVisualizations,
-    config: Legacy.KibanaConfig
-  ) => {
-    return new VisualizeEmbeddableFactory(savedVisualizations, config);
-  };
-  return Private(VisualizeEmbeddableFactoryProvider);
+// tslint:disable-next-line
+export default function(kibana: any) {
+  return new kibana.Plugin({
+    //    id: 'embeddableActions',
+    //    publicDir: resolve(__dirname, 'public'),
+    uiExports: {
+      embeddableFactories: ['plugins/embeddable_actions/actions'],
+      visTypes: ['plugins/embeddable_actions/actions'],
+    },
+  });
 }
-
-EmbeddableFactoriesRegistryProvider.register(visualizeEmbeddableFactoryProvider);

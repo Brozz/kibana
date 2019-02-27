@@ -17,20 +17,9 @@
  * under the License.
  */
 
-import { Legacy } from 'kibana';
-import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
-import { IPrivate } from 'ui/private';
-import { SavedVisualizations } from '../types';
-import { VisualizeEmbeddableFactory } from './visualize_embeddable_factory';
+import { actionRegistry } from 'ui/embeddable';
+import { SHOW_EDIT_MODE_ACTIONS, triggerRegistry } from 'ui/embeddable/actions/trigger_registry';
+import { CustomizePanelTitleAction } from './customize_panel_action';
 
-export function visualizeEmbeddableFactoryProvider(Private: IPrivate) {
-  const VisualizeEmbeddableFactoryProvider = (
-    savedVisualizations: SavedVisualizations,
-    config: Legacy.KibanaConfig
-  ) => {
-    return new VisualizeEmbeddableFactory(savedVisualizations, config);
-  };
-  return Private(VisualizeEmbeddableFactoryProvider);
-}
-
-EmbeddableFactoriesRegistryProvider.register(visualizeEmbeddableFactoryProvider);
+actionRegistry.registerAction(new CustomizePanelTitleAction());
+triggerRegistry.getTrigger(SHOW_EDIT_MODE_ACTIONS).addAction(new CustomizePanelTitleAction());

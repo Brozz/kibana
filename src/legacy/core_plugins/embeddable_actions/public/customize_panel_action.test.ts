@@ -17,20 +17,37 @@
  * under the License.
  */
 
-import { Legacy } from 'kibana';
-import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
-import { IPrivate } from 'ui/private';
-import { SavedVisualizations } from '../types';
-import { VisualizeEmbeddableFactory } from './visualize_embeddable_factory';
+import { Embeddable } from 'ui/embeddable';
+import { actionRegistry } from 'ui/embeddable/actions';
 
-export function visualizeEmbeddableFactoryProvider(Private: IPrivate) {
-  const VisualizeEmbeddableFactoryProvider = (
-    savedVisualizations: SavedVisualizations,
-    config: Legacy.KibanaConfig
-  ) => {
-    return new VisualizeEmbeddableFactory(savedVisualizations, config);
-  };
-  return Private(VisualizeEmbeddableFactoryProvider);
+interface ContainerState {
+  customization: { title?: string };
 }
 
-EmbeddableFactoriesRegistryProvider.register(visualizeEmbeddableFactoryProvider);
+class CustomizePanelContainer extends Embeddable<ContainerState, ContainerState> {
+  constructor() {
+    super(
+      { type: 'CONTAINERTEST', id: '123' },
+      { customization: { title: undefined } },
+      { customization: {} }
+    );
+  }
+
+  public render() {
+    return;
+  }
+
+  public onInputChanged(input: ContainerState) {
+    this.input = input;
+    this.output = input;
+  }
+}
+
+let container: CustomizePanelContainer;
+beforeEach(() => {
+  container = new CustomizePanelContainer();
+});
+
+test('customize panel title overrides panel', () => {
+  //  container.on;
+});

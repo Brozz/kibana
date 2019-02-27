@@ -17,26 +17,25 @@
  * under the License.
  */
 
-import 'ui/doc_table';
-
 import { EmbeddableFactory } from 'ui/embeddable';
 import { EmbeddableInstanceConfiguration, OnEmbeddableStateChanged } from 'ui/embeddable';
-import { SavedSearchLoader } from '../types';
-import { SearchEmbeddable, SearchInput, SearchOutput } from './search_embeddable';
+import { DashboardState } from '../selectors';
+import { DashboardContainer } from './dashboard_container';
 
-export const SEARCH_EMBEDDABLE_TYPE = 'search';
+export const DASHBOARD_CONTAINER_TYPE = 'dashboard';
 
-export class SearchEmbeddableFactory extends EmbeddableFactory<SearchInput, SearchOutput> {
-  constructor(
-    private $compile: ng.ICompileService,
-    private $rootScope: ng.IRootScopeService,
-    private searchLoader: SavedSearchLoader
-  ) {
-    super({ name: SEARCH_EMBEDDABLE_TYPE });
+export class DashboardContainerFactory extends EmbeddableFactory<DashboardState, {}> {
+  private embeddableFactories: any;
+  constructor() {
+    super({ name: DASHBOARD_CONTAINER_TYPE });
   }
 
   public getEditPath(panelId: string) {
-    return this.searchLoader.urlFor(panelId);
+    return '';
+  }
+
+  public setEmbeddableFactories(embeddableFactories: any) {
+    this.embeddableFactories = embeddableFactories;
   }
 
   /**
@@ -47,25 +46,11 @@ export class SearchEmbeddableFactory extends EmbeddableFactory<SearchInput, Sear
    * @param onEmbeddableStateChanged
    * @return
    */
-  public create(
-    { id }: EmbeddableInstanceConfiguration,
+  public async create(
+    panelMetadata: EmbeddableInstanceConfiguration,
     onEmbeddableStateChanged: OnEmbeddableStateChanged,
-    initialInput: SearchInput
+    initialInput: DashboardState
   ) {
-    const editUrl = this.getEditPath(id);
-
-    // can't change this to be async / awayt, because an Anglular promise is expected to be returned.
-    return this.searchLoader.get(id).then(savedObject => {
-      return new SearchEmbeddable(
-        {
-          onEmbeddableStateChanged,
-          savedSearch: savedObject,
-          editUrl,
-          $rootScope: this.$rootScope,
-          $compile: this.$compile,
-        },
-        initialInput
-      );
-    });
+    return new DashboardContainer(panelMetadata, initialInput, this.embeddableFactories);
   }
 }

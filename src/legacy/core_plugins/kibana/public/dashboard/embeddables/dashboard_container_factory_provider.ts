@@ -18,19 +18,16 @@
  */
 
 import { Legacy } from 'kibana';
-import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
 import { IPrivate } from 'ui/private';
-import { SavedVisualizations } from '../types';
-import { VisualizeEmbeddableFactory } from './visualize_embeddable_factory';
+import { DashboardContainerFactory } from './dashboard_container_factory';
 
-export function visualizeEmbeddableFactoryProvider(Private: IPrivate) {
-  const VisualizeEmbeddableFactoryProvider = (
-    savedVisualizations: SavedVisualizations,
-    config: Legacy.KibanaConfig
-  ) => {
-    return new VisualizeEmbeddableFactory(savedVisualizations, config);
+import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
+
+export function dashboardContainerFactoryProvider(Private: IPrivate) {
+  const DashboardContainerFactoryProvider = () => {
+    return new DashboardContainerFactory();
   };
-  return Private(VisualizeEmbeddableFactoryProvider);
+  return Private(DashboardContainerFactoryProvider);
 }
 
-EmbeddableFactoriesRegistryProvider.register(visualizeEmbeddableFactoryProvider);
+EmbeddableFactoriesRegistryProvider.register(dashboardContainerFactoryProvider);

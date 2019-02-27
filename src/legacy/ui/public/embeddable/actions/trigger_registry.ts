@@ -17,20 +17,27 @@
  * under the License.
  */
 
-import { Legacy } from 'kibana';
-import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
-import { IPrivate } from 'ui/private';
-import { SavedVisualizations } from '../types';
-import { VisualizeEmbeddableFactory } from './visualize_embeddable_factory';
+import { Trigger } from 'ui/embeddable/actions/trigger';
+import { Filter } from 'ui/embeddable/types';
 
-export function visualizeEmbeddableFactoryProvider(Private: IPrivate) {
-  const VisualizeEmbeddableFactoryProvider = (
-    savedVisualizations: SavedVisualizations,
-    config: Legacy.KibanaConfig
-  ) => {
-    return new VisualizeEmbeddableFactory(savedVisualizations, config);
-  };
-  return Private(VisualizeEmbeddableFactoryProvider);
+class TriggerRegistry {
+  private triggers: { [key: string]: Trigger<any> } = {};
+
+  public addTrigger<I>(trigger: Trigger<I>) {
+    this.triggers[trigger.id] = trigger;
+  }
+
+  public getTrigger(id: string) {
+    return this.triggers[id];
+  }
 }
 
-EmbeddableFactoriesRegistryProvider.register(visualizeEmbeddableFactoryProvider);
+export const triggerRegistry = new TriggerRegistry();
+
+export const SHOW_VIEW_MODE_ACTIONS = 'viewModeMenu';
+export const SHOW_EDIT_MODE_ACTIONS = 'editModeMenu';
+export const FILTER_ACTION = 'filterAction';
+
+triggerRegistry.addTrigger(new Trigger(SHOW_EDIT_MODE_ACTIONS));
+triggerRegistry.addTrigger(new Trigger(SHOW_VIEW_MODE_ACTIONS));
+triggerRegistry.addTrigger(new Trigger<Filter[]>(FILTER_ACTION));

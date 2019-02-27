@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable/embeddable_factories_registry';
+import { EmbeddableFactoriesRegistryProvider } from 'ui/embeddable';
 import { IPrivate } from 'ui/private';
 import { SavedSearchLoader } from '../types';
 import { SearchEmbeddableFactory } from './search_embeddable_factory';
